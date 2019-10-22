@@ -26,7 +26,7 @@ pd.set_option('display.max_columns', 10)
 
 # Функция для работы со строкой цены
 def salary_dev(salary):
-
+    salary = salary.replace(u'\xa0', u'')
     min_s = ''
     max_s = ''
 
@@ -71,13 +71,22 @@ def scrape_hh(html, vacancies):
             v_min_salary = 'none'
             v_max_salary = 'none'
         else:
-            v_salary = v_salary.getText()
+            v_salary = v_salary.getText(strip=True)
             v_min_salary, v_max_salary = salary_dev(v_salary)
+
+        # SALARY STRING TO INT
+        try:
+            vacancy_dir['min_salary'] = int(v_min_salary)
+        except ValueError:
+            vacancy_dir['min_salary'] = v_min_salary
+
+        try:
+            vacancy_dir['max_salary'] = int(v_max_salary)
+        except ValueError:
+            vacancy_dir['max_salary'] = v_max_salary
 
         vacancy_dir['title'] = v_title
         vacancy_dir['link'] = v_link
-        vacancy_dir['min_salary'] = v_min_salary
-        vacancy_dir['max_salary'] = v_max_salary
         vacancy_dir['site'] = 'HH'
         vacancies.append(vacancy_dir)
 
@@ -100,7 +109,7 @@ def scrape_sj(html, vacancies):
         vacancy_dir = {}
         v_title = vacancy.find('div', {'class': 'PlM3e'})
         links = vacancy.findAll('a', {'class': 'icMQ_'}, recursive='false')
-        v_salary = vacancy.find('span', {'class': 'f-test-text-company-item-salary'}).getText()
+        v_salary = vacancy.find('span', {'class': 'f-test-text-company-item-salary'}).getText(strip=True)
         v_link = ''
         v_min_salary, v_max_salary = salary_dev(v_salary)
 
@@ -132,8 +141,16 @@ def scrape_sj(html, vacancies):
             vacancy_dir['title'] = v_title
             vacancy_dir['link'] = v_link
             vacancy_dir['site'] = 'SJ'
-            vacancy_dir['min_salary'] = v_min_salary
-            vacancy_dir['max_salary'] = v_max_salary
+
+            try:
+                vacancy_dir['min_salary'] = int(v_min_salary.replace(u'\xa0', u''))
+            except ValueError:
+                vacancy_dir['min_salary'] = v_min_salary.replace(u'\xa0', u'')
+            try:
+                vacancy_dir['max_salary'] = int(v_max_salary.replace(u'\xa0', u''))
+            except ValueError:
+                vacancy_dir['max_salary'] = v_max_salary.replace(u'\xa0', u'')
+
             vacancies.append(vacancy_dir)
 
     return vacancies, next_link
@@ -182,4 +199,5 @@ def main():
 
 data = main()
 df = pd.DataFrame(data)
+df.to_pickle('vacancies.pkl')
 print(df)
