@@ -142,3 +142,4 @@ venv
 .venv
 creditcard.csv
 *.csv
+*.exe
