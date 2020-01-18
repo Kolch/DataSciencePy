@@ -12,7 +12,7 @@ Perhaps the most interesting thing you can find here. My personal projects are s
 
 ### basic_tools
 
-Basic libraries for working with data: numpy, pandas, matplotlib. Primitive use of standard tools.
+Basic libraries for working with data: numpy, pandas, matplotlib. Basic use of standard tools.
 
 ### data collection and processing
 
