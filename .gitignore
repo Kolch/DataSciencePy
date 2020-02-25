@@ -143,3 +143,5 @@ venv
 creditcard.csv
 *.csv
 *.exe
+*.tsv
+*.tfevents
