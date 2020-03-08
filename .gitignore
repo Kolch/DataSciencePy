@@ -145,3 +145,4 @@ creditcard.csv
 *.exe
 *.tsv
 *.tfevents
+*.tmp
